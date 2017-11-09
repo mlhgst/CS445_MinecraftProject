@@ -1,20 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/***************************************************************
+* file: FPCameraController.java
+* author: Vincent Zhu
+* class: CS 445 – Computer Graphics
+*
+* assignment: final program
+* date last modified: 11/8/2017
+*
+* purpose: this is the first person camera controller class that allows
+* the creation of a camera that allows the perspective view of a 3d
+* cube from any angle
+*
+****************************************************************/ 
+
 package finalprogram;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
-import org.lwjgl.Sys;
 
-/**
- *
- * @author Vincent
- */
+//first person camera controller class
 public class FPCameraController {
     //3d vector to store the camera's position initially
     private Vector3f position = null; //camera position
@@ -23,13 +28,13 @@ public class FPCameraController {
     //the rotation around the Y axis of the camera
     private float yaw = 0.0f;
     //the rotation around the X axis of the camera
-    private float pitch = 0.0f;
-    private Vector3Float me;
+    private float pitch = 0.0f;    
     
-    //constructor
+    //FPCameraController constructor
     public FPCameraController(float x, float y, float z){
-        //instantiate position Vector3f to the x y z params
+        //instantiate position Vector3f to the x,y,z parameters
         position = new Vector3f(x, y, z);
+        //instantiate lighting position Vector3f to the x,y,z parameters
         lposition = new Vector3f(x, y, z);
         lposition.x = 0f;
         lposition.y = 15f;
@@ -107,14 +112,12 @@ public class FPCameraController {
         glTranslatef(position.x, position.y, position.z);
     }
     
+    //maintains camera functionality until user closes window
     public void gameLoop()
     {
         FPCameraController camera = new FPCameraController(0, 0, 0);
         float dx = 0.0f;
         float dy = 0.0f;
-        float dt = 0.0f; //length of frame
-        float lastTime = 0.0f; // when the last frame was
-        long time = 0;
         float mouseSensitivity = 0.09f;
         float movementSpeed = .35f;
         //hide the mouse
@@ -123,13 +126,9 @@ public class FPCameraController {
         // keep looping till the display window is closed the ESC key is down
         while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
         {
-            time = Sys.getTime();
-            lastTime = time;
-            //distance in mouse movement
-            //from the last getDX() call.
+            //distance in mouse movement from the last getDX() call.
             dx = Mouse.getDX();
-            //distance in mouse movement
-            //from the last getDY() call.
+            //distance in mouse movement from the last getDY() call.
             dy = Mouse.getDY();
 
             //control camera yaw from x movement fromt the mouse
@@ -167,7 +166,7 @@ public class FPCameraController {
             //look through the camera before you draw anything
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            //you would draw your scene here.
+            //draw scene here
             render();
             //draw the buffer to the screen
             Display.update();
@@ -176,17 +175,11 @@ public class FPCameraController {
         Display.destroy();
     }
 
-        private void render() {
-            try{
-//                glBegin(GL_QUADS);
-//                glColor3f(1.0f,0.0f,1.0f);
-//                glVertex3f( 1.0f,-1.0f,-1.0f);
-//                glVertex3f(-1.0f,-1.0f,-1.0f);
-//                glVertex3f(-1.0f, 1.0f,-1.0f);
-//                glVertex3f( 1.0f, 1.0f,-1.0f);
-//                glEnd();
-                glBegin(GL_QUADS);
-            //Top
+    //method renders the 2x2x2 cube, as well as the cube edge's outline
+    private void render() {
+        try{
+            glBegin(GL_QUADS);
+                //Top
                 glColor3f(1.0f, 0.0f, 0.0f);
                 glVertex3f(1.0f, 1.0f, -1.0f);
                 glVertex3f(-1.0f, 1.0f, -1.0f);
@@ -205,25 +198,26 @@ public class FPCameraController {
                 glVertex3f(-1.0f, -1.0f, 1.0f);
                 glVertex3f(1.0f, -1.0f, 1.0f);
                 //Back
-                glColor3f(1.0f, 0.0f, 0.0f);
+                glColor3f(1.0f, 1.0f, 0.0f);
                 glVertex3f(1.0f, -1.0f, -1.0f);
                 glVertex3f(-1.0f, -1.0f, -1.0f);
                 glVertex3f(-1.0f, 1.0f, -1.0f);
                 glVertex3f(1.0f, 1.0f, -1.0f);
                 //Left
-                glColor3f(0.0f, 1.0f, 0.0f);
+                glColor3f(0.0f, 1.0f, 1.0f);
                 glVertex3f(-1.0f, 1.0f, 1.0f);
                 glVertex3f(-1.0f, 1.0f, -1.0f);
                 glVertex3f(-1.0f, -1.0f, -1.0f);
                 glVertex3f(-1.0f, -1.0f, 1.0f);
                 //Right
-                glColor3f(0.0f, 0.0f, 1.0f);
+                glColor3f(1.0f, 0.0f, 1.0f);
                 glVertex3f(1.0f, 1.0f, -1.0f);
                 glVertex3f(1.0f, 1.0f, 1.0f);
                 glVertex3f(1.0f, -1.0f, 1.0f);
                 glVertex3f(1.0f, -1.0f, -1.0f);
             glEnd();
 
+            //continuously draw the outlines of all cube faces
             glBegin(GL_LINE_LOOP);
                 //Top
                 glColor3f(0.0f, 0.0f, 0.0f);
@@ -272,11 +266,10 @@ public class FPCameraController {
                 glVertex3f(1.0f, -1.0f, 1.0f);
                 glVertex3f(1.0f, -1.0f, -1.0f);
             glEnd();
-            
-//            Display.update();                   
-//            Display.sync(60); 
-            }catch(Exception e){
-            }
-        }                    
-    }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }                    
+}
 

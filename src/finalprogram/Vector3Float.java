@@ -1,17 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/***************************************************************
+* file: Vector3fFloat.java
+* author: Vincent Zhu
+* class: CS 445 – Computer Graphics
+*
+* assignment: final program
+* date last modified: 11/8/2017
+*
+* purpose: this is a class file that allows the creation of vectors
+*
+****************************************************************/ 
 package finalprogram;
 
-/**
- *
- * @author Vincent
- */
+//Vector3Float class
 public class Vector3Float {
     public float x,y,z;
-    public Vector3Float(int x, int y, int z){
+    
+    //parameterized constructor for a 3D vector
+    public Vector3Float(float x, float y, float z){
         this.x = x;
         this.y = y;
         this.z = z;
