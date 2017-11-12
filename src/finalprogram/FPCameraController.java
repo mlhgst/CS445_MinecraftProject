@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class FPCameraController {
     //3d vector to store the camera's position initially
     private Vector3f position = null; //camera position
-    private Vector3f lposition = null; //lighting position
+    private Vector3f lposition = null; //lighting position    
     
     //the rotation around the Y axis of the camera
     private float yaw = 0.0f;
@@ -38,7 +38,7 @@ public class FPCameraController {
         lposition = new Vector3f(x, y, z);
         lposition.x = 0f;
         lposition.y = 15f;
-        lposition.z = 0f;
+        lposition.z = 0f;               
     }
     
     //increment the camera's current yaw rotation
@@ -116,6 +116,7 @@ public class FPCameraController {
     public void gameLoop()
     {
         FPCameraController camera = new FPCameraController(0, 0, 0);
+        Chunk chunk = new Chunk(0, 0, 0);
         float dx = 0.0f;
         float dy = 0.0f;
         float mouseSensitivity = 0.09f;
@@ -167,7 +168,8 @@ public class FPCameraController {
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //draw scene here
-            render();
+            //render();
+            chunk.render();
             //draw the buffer to the screen
             Display.update();
             Display.sync(60);

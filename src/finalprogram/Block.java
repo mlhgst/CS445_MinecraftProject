@@ -5,10 +5,6 @@
  */
 package finalprogram;
 
-/**
- *
- * @author Vincent
- */
 public class Block {
     private boolean IsActive;
     private BlockType Type;
