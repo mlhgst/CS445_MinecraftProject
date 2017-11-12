@@ -9,9 +9,9 @@
 * purpose: main class file responsible for initializing
 * an openGL window and the first person camera
 *
-****************************************************************/ 
+****************************************************************/
 package finalprogram;
-
+//
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;

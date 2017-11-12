@@ -9,6 +9,7 @@
 * purpose: this is a class file that allows the creation of vectors
 *
 ****************************************************************/ 
+//
 package finalprogram;
 
 //Vector3Float class

@@ -22,7 +22,7 @@ import javax.imageio.ImageIO;
  * attribution is appreciated.
  *
  */
-
+//
 public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
 
   public static int RANDOMSEED=0;
