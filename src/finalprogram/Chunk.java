@@ -37,7 +37,7 @@ public class Chunk {
     
     public void rebuildMesh(float startX, float startY, float startZ) {
         //SimplexNoise noise = new SimplexNoise(20, 0.5, 100);        
-        SimplexNoise noise = new SimplexNoise(CHUNK_SIZE, 0.3, (int)System.nanoTime());
+        SimplexNoise noise = new SimplexNoise(128, 0.3, (int)System.nanoTime());
         float maxY;
         
         VBOColorHandle = glGenBuffers();
@@ -49,8 +49,10 @@ public class Chunk {
         
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
+                
                 float noiseVal = (float)noise.getNoise((int)x, (int)z);
-                maxY = Math.abs(noiseVal*(CHUNK_SIZE)/2);
+                maxY = Math.abs(noiseVal*CHUNK_SIZE);
+                System.out.println("noiseVal: " + noiseVal + " maxY: " + maxY);
                 for(float y = 0; y <= maxY; y++){                                       
                     VertexPositionData.put(createCube((float) (startX + x* CUBE_LENGTH),(float)(y*CUBE_LENGTH+
                         (int)(CHUNK_SIZE*.8)),(float) (startZ + z * CUBE_LENGTH)));
