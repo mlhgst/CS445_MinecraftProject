@@ -37,6 +37,8 @@ public class Chunk {
     
     public void rebuildMesh(float startX, float startY, float startZ) {
         //SimplexNoise noise = new SimplexNoise(20, 0.5, 100);        
+        SimplexNoise noise = new SimplexNoise(CHUNK_SIZE, 0.3, (int)System.nanoTime());
+        float maxY;
         
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
@@ -47,11 +49,9 @@ public class Chunk {
         
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
-                //int i=(int)(startX+x*((CHUNK_SIZE - startX)/xResolution));
-                //int j=(int)(startY+*((CHUNK_SIZE - startX)/xResolution));
-                //int k=(int)(startY+*((CHUNK_SIZE - startX)/xResolution));
-                //float height = (startY + (int)(100*noise.getNoise(i,j,k))*CUBE_LENGTH);
-                for(float y = 0; y < CHUNK_SIZE; y++){                                       
+                float noiseVal = (float)noise.getNoise((int)x, (int)z);
+                maxY = Math.abs(noiseVal*(CHUNK_SIZE)/2);
+                for(float y = 0; y <= maxY; y++){                                       
                     VertexPositionData.put(createCube((float) (startX + x* CUBE_LENGTH),(float)(y*CUBE_LENGTH+
                         (int)(CHUNK_SIZE*.8)),(float) (startZ + z * CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -130,11 +130,11 @@ public class Chunk {
                 x + offset*16, y + offset*10,
                 x + offset*16, y + offset*11, 
                 x + offset*15, y + offset*11,
-                // BACK QUAD (same as front, left, right but inverted)
-                x + offset*4, y + offset*1,
-                x + offset*3, y + offset*1,
-                x + offset*3, y + offset*0,
-                x + offset*4, y + offset*0,
+                // BACK QUAD (same as front, left, right but inverted)                
+                x + offset*16, y + offset*11, 
+                x + offset*15, y + offset*11,
+                x + offset*15, y + offset*10,
+                x + offset*16, y + offset*10,
                 // LEFT QUAD (row 0, column 3)
                 x + offset*15, y + offset*10,
                 x + offset*16, y + offset*10,

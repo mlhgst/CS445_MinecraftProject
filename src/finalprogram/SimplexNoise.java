@@ -1,4 +1,5 @@
 //
+package finalprogram;
 import java.util.Random;
 
 public class SimplexNoise {
