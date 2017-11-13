@@ -1,4 +1,16 @@
 package finalprogram;
+/***************************************************************
+* file: FPCameraController.java
+* author: Vincent Zhu & Melanie Giusti
+* class: CS 445 – Computer Graphics
+*
+* assignment: final program
+* date last modified: 11/8/2017
+*
+* purpose: Generates terrain using Simplex Noise class and places
+* terrain textures at appropriate heights
+*
+****************************************************************/ 
 import java.nio.FloatBuffer;
 import java.util.Random;
 import org.lwjgl.BufferUtils;
@@ -11,11 +23,16 @@ import org.newdawn.slick.util.ResourceLoader;
 public class Chunk {
     static final int CHUNK_SIZE = 30;
     static final int CUBE_LENGTH = 2;
+    static final int NUM_TERRAIN_LVLS = 3;
+    static final int WATER_LVL = NUM_TERRAIN_LVLS;
+    static final int SAND_LVL = NUM_TERRAIN_LVLS+1;
+    
     private Block[][][] Blocks;
     private int VBOVertexHandle;
     private int VBOColorHandle;
     private int StartX, StartY, StartZ;    
     private Random r;
+    
     //for texture mapping
     private int VBOTextureHandle;
     private Texture texture;
@@ -36,8 +53,8 @@ public class Chunk {
     }
     
     public void rebuildMesh(float startX, float startY, float startZ) {
-        //SimplexNoise noise = new SimplexNoise(20, 0.5, 100);        
-        SimplexNoise noise = new SimplexNoise(128, 0.3, (int)System.nanoTime());
+        
+        SimplexNoise noise = new SimplexNoise(100, 0.3, (int)System.nanoTime());
         float maxY;
         
         VBOColorHandle = glGenBuffers();
@@ -47,13 +64,36 @@ public class Chunk {
         FloatBuffer VertexColorData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE *CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexTextureData = BufferUtils.createFloatBuffer((CHUNK_SIZE*CHUNK_SIZE *CHUNK_SIZE)* 6 * 12);
         
+        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+        
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
                 
+                // Set a max height for each x,z location -> generate terrain
                 float noiseVal = (float)noise.getNoise((int)x, (int)z);
-                maxY = Math.abs(noiseVal*CHUNK_SIZE);
-                System.out.println("noiseVal: " + noiseVal + " maxY: " + maxY);
-                for(float y = 0; y <= maxY; y++){                                       
+                maxY = (Math.abs(noiseVal)*CHUNK_SIZE)+NUM_TERRAIN_LVLS;  // Needs to have a height of at least 3 (3 levels of terrain)
+                
+                for(float y = 0; y <= maxY; y++){ 
+                    
+                    // Set block type based on relative height 
+                    if(y > maxY-1 ){ // TOP LEVEL - water,sand, grass
+                        
+                        if(y <= WATER_LVL){
+                            Blocks[(int)x][(int)y][(int)z] = new Block(Block.BlockType.BlockType_Water);
+                        }else if(y <= SAND_LVL && y > WATER_LVL){
+                            Blocks[(int)x][(int)y][(int)z] = new Block(Block.BlockType.BlockType_Sand);
+                        }else{
+                            Blocks[(int)x][(int)y][(int)z] = new Block(Block.BlockType.BlockType_Grass);
+                        }
+                    }else if(y <= maxY-1 && y > maxY-NUM_TERRAIN_LVLS){// MIDDLE LAYER - dirt, stone
+                        if(y >= maxY-(NUM_TERRAIN_LVLS-1))
+                            Blocks[(int)x][(int)y][(int)z]  = new Block(Block.BlockType.BlockType_Dirt);
+                        else
+                            Blocks[(int)x][(int)y][(int)z]  = new Block(Block.BlockType.BlockType_Stone);
+                    }else if(y <= maxY-NUM_TERRAIN_LVLS){ // BOTTOM LAYER - bedrock
+                        Blocks[(int)x][(int)y][(int)z]  = new Block(Block.BlockType.BlockType_Bedrock);
+                    }
+                    
                     VertexPositionData.put(createCube((float) (startX + x* CUBE_LENGTH),(float)(y*CUBE_LENGTH+
                         (int)(CHUNK_SIZE*.8)),(float) (startZ + z * CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -362,14 +402,6 @@ public class Chunk {
     }
     
     private float[] getCubeColor(Block block) {
-//        switch (block.GetID()) {
-//            case 1:
-//                return new float[] { 0, 1, 0 };
-//            case 2:
-//                return new float[] { 1, 0.5f, 0 };
-//            case 3:
-//                return new float[] { 0, 0f, 1f };
-//        }
         return new float[] { 1, 1, 1 };
     }
     
@@ -382,29 +414,6 @@ public class Chunk {
             System.out.print("ER-ROAR!");
         }        
         
-        r= new Random();
-        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if(r.nextFloat() > 0.85f){
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Grass);
-                    }else if(r.nextFloat()>0.75f){
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Sand);
-                    }else if(r.nextFloat()>0.6f){
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Water);
-                    }else if(r.nextFloat()>0.45f){ 
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Dirt);
-                    }else if(r.nextFloat()>0.3f){ 
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Stone);
-                    }else if(r.nextFloat()>0.15f){ 
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Bedrock);
-                    }else{
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);
-                    }
-                }
-            }
-        }
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();         

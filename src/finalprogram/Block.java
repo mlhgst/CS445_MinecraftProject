@@ -1,4 +1,4 @@
-//
+
 package finalprogram;
 
 public class Block {
