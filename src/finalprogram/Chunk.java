@@ -115,6 +115,7 @@ public class Chunk {
         //includes noise generation so terrain elevation changes appear reasonable
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
+                
                 float noiseVal = (float)noise.getNoise((int)x, (int)z);
                 maxY = (Math.abs(noiseVal)*CHUNK_SIZE)+NUM_TERRAIN_LVLS;  // Needs to have a height of at least 3 (3 levels of terrain)
                                                     
