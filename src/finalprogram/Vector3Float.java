@@ -4,12 +4,11 @@
 * class: CS 445 – Computer Graphics
 *
 * assignment: final program
-* date last modified: 11/8/2017
+* date last modified: 11/16/2017
 *
-* purpose: this is a class file that allows the creation of vectors
+* purpose: this is a class file that allows the creation of 3D vectors
 *
 ****************************************************************/ 
-//
 package finalprogram;
 
 //Vector3Float class

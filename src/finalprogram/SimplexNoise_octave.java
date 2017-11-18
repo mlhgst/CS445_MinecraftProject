@@ -1,12 +1,19 @@
+/***************************************************************
+* file: SimplexNoise_octave.java
+* author: Vincent Zhu
+* class: CS 445 – Computer Graphics
+*
+* assignment: final program
+* date last modified: 11/16/2017
+*
+* purpose: this is a class file that allows the creation of noise octaves, 
+* which contain parameters used to exhibit realistic appearing terrain features
+* when creating the world
+*
+****************************************************************/ 
 package finalprogram;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.Random;
-import javax.imageio.ImageIO;
-
-
 /*
  * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
  *
@@ -23,7 +30,8 @@ import javax.imageio.ImageIO;
  * attribution is appreciated.
  *
  */
-//
+
+//SimplexNoise_octave class
 public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
 
   public static int RANDOMSEED=0;
@@ -62,26 +70,25 @@ public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
   private short perm[] = new short[512];
   private short permMod12[] = new short[512];
   public SimplexNoise_octave(int seed) {
-    p=p_supply.clone();
+    p = p_supply.clone();
 
     if (seed==RANDOMSEED){
-        Random rand=new Random();
-        seed=rand.nextInt();
+        Random rand = new Random();
+        seed = rand.nextInt();
     }
 
     //the random for the swaps
-    Random rand=new Random(seed);
+    Random rand = new Random(seed);
 
     //the seed determines the swaps that occur between the default order and the order we're actually going to use
-    for(int i=0;i<NUMBEROFSWAPS;i++){
-        int swapFrom=rand.nextInt(p.length);
-        int swapTo=rand.nextInt(p.length);
+    for(int i = 0; i < NUMBEROFSWAPS; i++){
+        int swapFrom = rand.nextInt(p.length);
+        int swapTo = rand.nextInt(p.length);
 
-        short temp=p[swapFrom];
-        p[swapFrom]=p[swapTo];
-        p[swapTo]=temp;
+        short temp = p[swapFrom];
+        p[swapFrom] = p[swapTo];
+        p[swapTo] = temp;
     }
-
 
     for(int i=0; i<512; i++)
     {
@@ -112,7 +119,6 @@ public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
 
   private static double dot(Grad g, double x, double y, double z, double w) {
     return g.x*x + g.y*y + g.z*z + g.w*w; }
-
 
   // 2D simplex noise
   public double noise(double xin, double yin) {
@@ -167,7 +173,6 @@ public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
     // The result is scaled to return values in the interval [-1,1].
     return 70.0 * (n0 + n1 + n2);
   }
-
 
   // 3D simplex noise
   public double noise(double xin, double yin, double zin) {
@@ -249,7 +254,6 @@ public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
     // The result is scaled to stay just inside [-1,1]
     return 32.0*(n0 + n1 + n2 + n3);
   }
-
 
   // 4D simplex noise, better simplex rank ordering method 2012-03-09
   public double noise(double x, double y, double z, double w) {
@@ -390,5 +394,4 @@ public class SimplexNoise_octave {  // Simplex noise in 2D, 3D and 4D
       this.w = w;
     }
   }
-
 }
