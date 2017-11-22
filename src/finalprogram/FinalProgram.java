@@ -12,6 +12,8 @@
 ****************************************************************/
 package finalprogram;
 //
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
@@ -52,7 +54,7 @@ public class FinalProgram {
     
     //initializes openGL parameters for the openGL window
     private void initGL(){
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.9f, 1.0f, 1.5f, 0.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();        
         //sets up perspective projection matrix
@@ -66,6 +68,14 @@ public class FinalProgram {
         //for texture mapping
         glEnable(GL_TEXTURE_2D);
         glEnableClientState (GL_TEXTURE_COORD_ARRAY);
+    }
+
+    
+    private void initLightArrays() {
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(0.0f).put(0.0f).put(0.0f).put(1.0f).flip();
+        FloatBuffer whiteLight = BufferUtils.createFloatBuffer(4);
+        whiteLight.put(1.0f).put(1.0f).put(1.0f).put(0.0f).flip();
     }
            
     //main function
