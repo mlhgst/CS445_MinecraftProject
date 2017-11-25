@@ -24,12 +24,15 @@ import org.lwjgl.BufferUtils;
 public class FPCameraController {
     //3d vector to store the camera's position initially
     private Vector3Float position = null; //camera position
-    private Vector3Float lposition = null; //lighting position    
+    private Vector3Float lposition = null; //lighting position 
+    private Vector3Float lpositionBehind = null;
     
     //the rotation around the Y axis of the camera
     private float yaw = 0.0f;
     //the rotation around the X axis of the camera
     private float pitch = 0.0f;    
+    
+    private boolean defaultWorld = true;
     
     //parameterized FPCameraController constructor
     public FPCameraController(float x, float y, float z){
@@ -41,9 +44,9 @@ public class FPCameraController {
         //instantiate lighting position to x,y,z parameters
         lposition = new Vector3Float(x, y, z);
         //still light source
-        lposition.x = 20f;
-        lposition.y = 0f;
-        lposition.z = 50f;               
+        lposition.x = -40f;
+        lposition.y = -60f;
+        lposition.z = 60f;                    
     }
     
     //increment the camera's current yaw rotation
@@ -70,7 +73,7 @@ public class FPCameraController {
         FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
         glLight(GL_LIGHT0, GL_POSITION, lightPosition);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
 
     //moves the camera backward relative to its current rotation (yaw)
@@ -85,7 +88,7 @@ public class FPCameraController {
         FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         lightPosition.put(lposition.x-=xOffset).put(lposition.y).put(lposition.z+=zOffset).put(1.0f).flip();
         glLight(GL_LIGHT0, GL_POSITION, lightPosition);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
     
     //strafes the camera left relative to its current rotation (yaw)
@@ -100,7 +103,7 @@ public class FPCameraController {
         FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
         glLight(GL_LIGHT0, GL_POSITION, lightPosition);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
     
     //strafes the camera right relative to its current rotation (yaw)
@@ -115,23 +118,23 @@ public class FPCameraController {
         FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
         glLight(GL_LIGHT0, GL_POSITION, lightPosition);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
     
     //moves the camera up
     public void moveUp(float distance)
     {
         position.y -= distance;
-        //System.out.println("Camera position! x: " + position.x + " y: " + position.y + " z: " + position.z);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Camera position! x: " + position.x + " y: " + position.y + " z: " + position.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
     
     //moves the camera down
     public void moveDown(float distance)
     {
         position.y += distance;
-        //System.out.println("Camera position! x: " + position.x + " y: " + position.y + " z: " + position.z);
-        //System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
+        System.out.println("Camera position! x: " + position.x + " y: " + position.y + " z: " + position.z);
+        System.out.println("Light position! x: " + lposition.x + " y: " + lposition.y + " z: " + lposition.z);
     }
     
     //translates and rotate the matrix so that it looks through the camera
@@ -153,7 +156,8 @@ public class FPCameraController {
     public void gameLoop()
     {
         FPCameraController camera = new FPCameraController(0, 0, 0);
-        Chunk chunk = new Chunk(0, 0, 0);
+        Chunk chunk = new Chunk(0, 0, 0, 0);
+        Chunk chunkOther = new Chunk(0, 0, 0, 1);
         float dx = 0.0f;
         float dy = 0.0f;
         float mouseSensitivity = 0.09f;
@@ -197,6 +201,10 @@ public class FPCameraController {
             {
                 camera.moveDown(movementSpeed);
             }
+            if (Keyboard.isKeyDown(Keyboard.KEY_Q))
+            {
+                defaultWorld = !defaultWorld;
+            }
             
             //set the modelview matrix back to the identity
             glLoadIdentity();
@@ -204,7 +212,10 @@ public class FPCameraController {
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //draw scene here, rendering the Chunk
-            chunk.render();
+            if(defaultWorld)
+                chunk.render();
+            else
+                chunkOther.render();             
             //draw the buffer to the screen
             Display.update();
             Display.sync(60);

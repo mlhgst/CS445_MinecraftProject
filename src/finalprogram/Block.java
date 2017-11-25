@@ -24,7 +24,15 @@ public class Block {
         BlockType_Dirt(3),
         BlockType_Stone(4),
         BlockType_Bedrock(5),
-        BlockType_Default(6);
+        BlockType_Default(6),
+        
+        BlockType_Pumpkin(7),
+        BlockType_Lava1(8),
+        BlockType_MoltenRock(9),
+        BlockType_Lava2(10),
+        BlockType_SpiderWeb(11),
+        BlockType_DeadTree1(12);
+        
         
         private int BlockID; //ID to determine the block appearance by type
         

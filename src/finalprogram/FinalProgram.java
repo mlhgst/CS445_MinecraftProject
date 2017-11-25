@@ -67,7 +67,8 @@ public class FinalProgram {
     
     //initializes openGL parameters for the openGL window
     private void initGL(){
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0f, 0f, 0f, 0f);
+        //glClearColor(0.9f, 1.0f, 1.5f, 0.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();        
         //sets up perspective projection matrix

@@ -12,7 +12,7 @@
 *
 ****************************************************************/ 
 package finalprogram;
-
+//comment
 import java.util.Random;
 
 //SimplexNoise class
