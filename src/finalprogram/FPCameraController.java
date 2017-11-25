@@ -13,6 +13,8 @@
 ****************************************************************/ 
 //
 package finalprogram;
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -60,6 +62,11 @@ public class FPCameraController {
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
         position.x -= xOffset;
         position.z += zOffset;
+
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+
     }
     
     //moves the camera backward relative to its current rotation (yaw)
@@ -69,6 +76,11 @@ public class FPCameraController {
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
         position.x += xOffset;
         position.z -= zOffset;
+
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lposition.x-=xOffset).put(lposition.y).put(lposition.z+=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+
     }
     
     //strafes the camera left relative to its current rotation (yaw)
@@ -78,6 +90,11 @@ public class FPCameraController {
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw-90));
         position.x -= xOffset;
         position.z += zOffset;
+        
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+
     }
     
     //strafes the camera right relative to its current rotation (yaw)
@@ -87,6 +104,11 @@ public class FPCameraController {
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw+90));
         position.x -= xOffset;
         position.z += zOffset;
+    
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lposition.x+=xOffset).put(lposition.y).put(lposition.z-=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+
     }
     
     //moves the camera up
@@ -117,6 +139,7 @@ public class FPCameraController {
     {
         FPCameraController camera = new FPCameraController(0, 0, 0);
         Chunk chunk = new Chunk(0, 0, 0);
+        SkyChunk skyChunk = new SkyChunk(0,Chunk.CHUNK_SIZE*Chunk.CUBE_LENGTH,0);
         float dx = 0.0f;
         float dy = 0.0f;
         float mouseSensitivity = 0.09f;
@@ -167,8 +190,10 @@ public class FPCameraController {
             //look through the camera before you draw anything
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            //draw scene here
-            //render();
+
+            //draw scene here, rendering the Chunk & Sky
+            skyChunk.render();
+
             chunk.render();
             //draw the buffer to the screen
             Display.update();
